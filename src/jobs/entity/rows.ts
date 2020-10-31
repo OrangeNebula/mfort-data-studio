@@ -2,12 +2,12 @@ import { Parser } from 'json2csv';
 
 export default class Rows {
   constructor(
-    public readonly row: any[],
+    public readonly rows: any[],
   ) {
   }
 
-  static toCsv(rows: any[]) {
+  toCsv() {
     const parser = new Parser();
-    return parser.parse(rows);
+    return parser.parse(this.rows);
   }
 }

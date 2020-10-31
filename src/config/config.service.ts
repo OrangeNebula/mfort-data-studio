@@ -1,34 +1,42 @@
 import { ConfigManager } from '@nestjsplus/config';
 import * as Joi from '@hapi/joi';
-import { KnexOptions, KnexOptionsFactory } from '@nestjsplus/knex';
 import { Injectable } from '@nestjs/common';
-import { S3Options } from '../s3/interface/S3Options';
 
 @Injectable()
-export class ConfigService extends ConfigManager implements KnexOptionsFactory {
+export class ConfigService extends ConfigManager {
   public provideConfigSpec(environment: any) {
     return {
-      DB_HOST: {
+      SERVICE_DB_HOST: {
         validate: Joi.string(),
         required: false,
         default: 'localhost',
       },
-      DB_PORT: {
-        validate: Joi.number()
-          .min(3306)
-          .max(65535),
+      SERVICE_DB_USERNAME: {
+        validate: Joi.string(),
+        required: true,
+      },
+      SERVICE_DB_PASSWORD: {
+        validate: Joi.string(),
+        required: true,
+      },
+      SERVICE_DB_NAME: {
+        validate: Joi.string(),
+        required: true,
+      },
+      STUDIO_DB_HOST: {
+        validate: Joi.string(),
         required: false,
-        default: 3306,
+        default: 'localhost',
       },
-      DB_USERNAME: {
+      STUDIO_DB_USERNAME: {
         validate: Joi.string(),
         required: true,
       },
-      DB_PASSWORD: {
+      STUDIO_DB_PASSWORD: {
         validate: Joi.string(),
         required: true,
       },
-      DB_NAME: {
+      STUDIO_DB_NAME: {
         validate: Joi.string(),
         required: true,
       },
@@ -51,25 +59,21 @@ export class ConfigService extends ConfigManager implements KnexOptionsFactory {
     return this.get<string>('DATA_BUCKET');
   }
 
-  public getS3Options(): S3Options {
+  public getServiceDbOptions() {
     return {
-      accessKeyId: this.get<string>('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: this.get<string>('AWS_SECRET_ACCESS_KEY'),
-      region: 'ap-northeast-2',
+      host: this.get<string>('SERVICE_DB_HOST'),
+      user: this.get<string>('SERVICE_DB_USERNAME'),
+      password: this.get<string>('SERVICE_DB_PASSWORD'),
+      database: this.get<string>('SERVICE_DB_NAME'),
     }
   }
 
-  public createKnexOptions(): KnexOptions {
+  public getStudioDbOptions() {
     return {
-      client: 'mysql',
-      debug: true,
-      connection: {
-        host: this.get<string>('DB_HOST'),
-        user: this.get<string>('DB_USERNAME'),
-        password: this.get<string>('DB_PASSWORD'),
-        database: this.get<string>('DB_NAME'),
-        port: this.get<number>('DB_PORT'),
-      },
-    };
+      host: this.get<string>('STUDIO_DB_HOST'),
+      user: this.get<string>('STUDIO_DB_USERNAME'),
+      password: this.get<string>('STUDIO_DB_PASSWORD'),
+      database: this.get<string>('STUDIO_DB_NAME'),
+    }
   }
 }

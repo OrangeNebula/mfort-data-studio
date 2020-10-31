@@ -2,7 +2,7 @@ import { S3Service } from './s3.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '../config/config.module';
 import Util from '../core/Util';
-import Rows from '../jobs/Rows';
+import Rows from '../jobs/entity/rows';
 import { ConfigService } from '../config/config.service';
 
 describe('S3 서비스 모듈 테스트', () => {
@@ -23,10 +23,11 @@ describe('S3 서비스 모듈 테스트', () => {
   });
 
   test('S3 의 버킷으로 csv 데이터를 업로드 할 수 있다.', async () => {
-    await service.upload(`${config.getDataBucket()}/${Util.getYearMonthKey()}`,
-      `${Util.getDay()}.csv`, Rows.toCsv([
+    const rows = new Rows([
       { name: 'test1', value: '10' },
       { name: 'test2', phone: '010' },
-    ]));
+    ]);
+    await service.upload(`${config.getDataBucket()}/${Util.getYearMonthKey()}`,
+      `${Util.getDay()}.csv`, rows.toCsv());
   });
 })
