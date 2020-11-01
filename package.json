@@ -29,6 +29,7 @@
     "@nestjsplus/config": "^1.0.14",
     "@nestjsplus/knex": "^1.0.0",
     "aws-sdk": "^2.783.0",
+    "cron": "^1.8.2",
     "googleapis": "^61.0.0",
     "json2csv": "^5.0.3",
     "knex": "^0.21.9",

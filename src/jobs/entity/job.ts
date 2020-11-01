@@ -7,4 +7,8 @@ export default class Job {
     public readonly name: string,
     public readonly queries: Query[],
   ) {}
+
+  get info(): string {
+    return `[(${this.id}) ${this.name} : ${this.cron}]`;
+  }
 }

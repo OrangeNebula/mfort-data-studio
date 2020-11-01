@@ -8,16 +8,28 @@ import { JobsRepository } from './repository/jobs.repository';
 import { ServiceRepository } from './repository/service.repository';
 import { JobsMapper } from './repository/jobs.mapper';
 import { RowsMapper } from './repository/rows.mapper';
+import { JobsCronService } from './jobs-cron.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [ConfigModule, DbModule, S3Module],
+  imports: [
+    ScheduleModule.forRoot(),
+    ConfigModule,
+    DbModule,
+    S3Module,
+  ],
   controllers: [JobsController],
   providers: [
     JobsService,
+    JobsCronService,
     JobsRepository,
     ServiceRepository,
     JobsMapper,
     RowsMapper,
+  ],
+  exports: [
+    JobsService,
+    JobsCronService,
   ],
 })
 export class JobsModule {}

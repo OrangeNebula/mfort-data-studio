@@ -33,4 +33,26 @@ export class JobsRepository {
       queries.map((item) => ({ name: item.name, query: item.query })),
     );
   }
+
+  async getAllJobs(): Promise<Job[]> {
+    const jobRows = await this.db.instance
+      .select('id', 'cron', 'name')
+      .from('cron_job');
+    const results = [];
+    for (const row of jobRows) {
+      const queries = await this.db.instance
+        .select('name', 'query')
+        .from('job_query')
+        .where({
+          jobId: row.id,
+        });
+      results.push(this.mapper.toEntity(
+        row.id,
+        row.cron,
+        row.name,
+        queries.map((item) => ({ name: item.name, query: item.query })),
+      ));
+    }
+    return results;
+  }
 }
